@@ -67,6 +67,8 @@ cleanup:
 void read_syscall_counts(const char *syscall_count_map_path)
 {
     printf("Reading syscall counts\n");
+    FILE *log_file;
+    log_file = fopen("normal_log.txt", "w");
     int pid_syscount_map_fd = bpf_obj_get(syscall_count_map_path);
     if (pid_syscount_map_fd < 0)
     {
@@ -102,12 +104,14 @@ void read_syscall_counts(const char *syscall_count_map_path)
             __u32 pid = next_key >> 32;
             __u32 sysid = next_key & 0xFFFFFFFF;
             printf("PID: %u, sysID: %u count: %u\n", pid, sysid, value);
+            fprintf(log_file, "PID: %u, sysID: %u count: %u\n", pid, sysid, value);
             value = 0;
             bpf_map_update_elem(pid_syscount_map_fd, &next_key, &value, BPF_ANY);
         }
         key = next_key;
     }
     close(pid_syscount_map_fd);
+    fclose(log_file);
 
     printf("--------------------\n");
 }

@@ -94,7 +94,7 @@ int main(int argc, char **argv) {
     while (1) {
 
         read_syscall_counts(SYSCALL_COUNT_MAP_PATH);
-        sleep(10);
+        sleep(30);
     }
 
     if (rb) {
